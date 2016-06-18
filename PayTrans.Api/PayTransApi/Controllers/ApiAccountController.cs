@@ -1,20 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Linq;
 using System.Web.Http;
+using Microsoft.AspNet.Identity;
 using PayTransApi.Models;
 
 namespace PayTransApi.Controllers
 {
-//    [Authorize]
+    [Authorize]
     public class ApiAccountController : ApiController
     {
         [HttpGet]
-        public ApplicationUser[] LinkedAccounts()
+        public int GetLimit()
         {
-            return new ApplicationDbContext().Users.ToArray();
+            var id = User.Identity.GetUserId();
+            var user = new ApplicationDbContext().Users.FirstOrDefault(x => x.Id == id);
+            return user.Limit;
+        }
+
+        [HttpGet]
+        public LinkedAccountModel[] LinkedAccounts()
+        {
+            var id = User.Identity.GetUserId();
+
+            var linkedAccounts =
+                new ApplicationDbContext().Users.FirstOrDefault(x => x.Id == id).LinkedAccounts.ToList();
+
+            return linkedAccounts.Select(u => new LinkedAccountModel()
+                    {
+                        FirstName = u.FirstName,
+                        LastName = u.LastName,
+                        Id = u.Id,
+                        AvatarUrl = u.AvatarUrl,
+                        Limit = u.Limit
+                    }).ToArray();
         }
     }
 }

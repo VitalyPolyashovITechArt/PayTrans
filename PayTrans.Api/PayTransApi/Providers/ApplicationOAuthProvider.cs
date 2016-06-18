@@ -40,7 +40,7 @@ namespace PayTransApi.Providers
 //            ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
 //                CookieAuthenticationDefaults.AuthenticationType);
 
-            AuthenticationProperties properties = CreateProperties(user.FirstName, user.LastName, user.AvatarUrl);
+            AuthenticationProperties properties = CreateProperties(user);
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
             context.Validated(ticket);
 //            context.Request.Context.Authentication.SignIn(cookiesIdentity);
@@ -82,13 +82,14 @@ namespace PayTransApi.Providers
             return Task.FromResult<object>(null);
         }
 
-        public static AuthenticationProperties CreateProperties(string firstName, string lastName, string avatarUrl)
+        public static AuthenticationProperties CreateProperties(ApplicationUser user)
         {
             IDictionary<string, string> data = new Dictionary<string, string>
             {
-                { "firstName", firstName },
-                { "lastName", lastName },
-                { "avatarUrl", avatarUrl }
+                { "firstName", user.FirstName },
+                { "lastName", user.LastName },
+                { "avatarUrl", user.AvatarUrl },
+                { "limit", user.Limit.ToString() }
             };
 
             return new AuthenticationProperties(data);

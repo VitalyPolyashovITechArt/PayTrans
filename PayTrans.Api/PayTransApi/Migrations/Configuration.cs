@@ -10,6 +10,7 @@ namespace PayTransApi.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
             ContextKey = "PayTransApi.Models.ApplicationDbContext";
         }
 

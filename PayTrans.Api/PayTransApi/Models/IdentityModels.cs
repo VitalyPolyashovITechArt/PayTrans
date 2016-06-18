@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 
 namespace PayTransApi.Models
 {
@@ -23,7 +24,15 @@ namespace PayTransApi.Models
 
         public string AvatarUrl { get; set; }
 
-        public DbSet<ApplicationUser> LinkedAccount { get; set; }
+        public int Limit { get; set; }
+
+        public virtual ApplicationUser ParentUser { get; set; }
+
+        public virtual ICollection<ApplicationUser> LinkedAccounts { get; set; }
+
+        public virtual LongTermTicket LongTermTicket { get; set; }
+
+        public virtual ActiveTicket ActiveTicket { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -37,5 +46,9 @@ namespace PayTransApi.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<LongTermTicket> LongTermTickets { get; set; }
+
+        public DbSet<ActiveTicket> ActiveTickets { get; set; }
     }
 }
