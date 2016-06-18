@@ -53,7 +53,7 @@ namespace PayTransApi
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 3
+                RequiredLength = 6
             };
 
             // Configure user lockout defaults

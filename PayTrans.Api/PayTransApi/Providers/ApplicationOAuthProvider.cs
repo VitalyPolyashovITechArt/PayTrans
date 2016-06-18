@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity.Owin;
@@ -39,7 +40,7 @@ namespace PayTransApi.Providers
 //            ClaimsIdentity cookiesIdentity = await user.GenerateUserIdentityAsync(userManager,
 //                CookieAuthenticationDefaults.AuthenticationType);
 
-            AuthenticationProperties properties = CreateProperties(user.UserName);
+            AuthenticationProperties properties = CreateProperties(user.FirstName, user.LastName, user.AvatarUrl);
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);
             context.Validated(ticket);
 //            context.Request.Context.Authentication.SignIn(cookiesIdentity);
@@ -81,12 +82,15 @@ namespace PayTransApi.Providers
             return Task.FromResult<object>(null);
         }
 
-        public static AuthenticationProperties CreateProperties(string userName)
+        public static AuthenticationProperties CreateProperties(string firstName, string lastName, string avatarUrl)
         {
             IDictionary<string, string> data = new Dictionary<string, string>
             {
-                { "userName", userName }
+                { "firstName", firstName },
+                { "lastName", lastName },
+                { "avatarUrl", avatarUrl }
             };
+
             return new AuthenticationProperties(data);
         }
     }
