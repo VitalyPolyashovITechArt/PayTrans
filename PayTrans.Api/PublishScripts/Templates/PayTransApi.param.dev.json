@@ -1,0 +1,29 @@
+{
+  "siteName": {
+    "value": "PayTransApi"
+  },
+  "hostingPlanName": {
+    "value": "PayTransServicePlan"
+  },
+  "siteLocation": {
+    "value": "North Europe"
+  },
+  "sku": {
+    "value": "Free"
+  },
+  "workerSize": {
+    "value": "0"
+  },
+  "siteMode": {
+    "value": "Limited"
+  },
+  "computeMode": {
+    "value": "0"
+  },
+  "subscriptionId": {
+    "value": "04ca58cc-2c2f-4441-b731-bf6f84054d34"
+  },
+  "resourceGroup": {
+    "value": "PayTrans"
+  }
+}

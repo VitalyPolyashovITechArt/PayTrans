@@ -1,9 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayTrans.Api", "PayTrans.Api\PayTrans.Api.csproj", "{8E94EE90-614F-4160-B0EF-BA0FE86F7DA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayTransApi", "PayTransApi\PayTransApi.csproj", "{7DA31DF3-3377-4600-9FD6-1708DDCE6F3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublishScripts", "PublishScripts", "{9C57598F-8FD8-4CF3-89B1-E3D81B45EA26}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{3B8BA49F-58F7-4190-9E37-ED971705B49F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{03CD09E5-2895-4EB4-ABD0-154CE1903098}"
+	ProjectSection(SolutionItems) = preProject
+		PublishScripts\Templates\PayTransApi.json = PublishScripts\Templates\PayTransApi.json
+		PublishScripts\Templates\PayTransApi.param.dev.json = PublishScripts\Templates\PayTransApi.param.dev.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +27,16 @@ Global
 		{8E94EE90-614F-4160-B0EF-BA0FE86F7DA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E94EE90-614F-4160-B0EF-BA0FE86F7DA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E94EE90-614F-4160-B0EF-BA0FE86F7DA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DA31DF3-3377-4600-9FD6-1708DDCE6F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DA31DF3-3377-4600-9FD6-1708DDCE6F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DA31DF3-3377-4600-9FD6-1708DDCE6F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DA31DF3-3377-4600-9FD6-1708DDCE6F3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3B8BA49F-58F7-4190-9E37-ED971705B49F} = {9C57598F-8FD8-4CF3-89B1-E3D81B45EA26}
+		{03CD09E5-2895-4EB4-ABD0-154CE1903098} = {9C57598F-8FD8-4CF3-89B1-E3D81B45EA26}
 	EndGlobalSection
 EndGlobal
