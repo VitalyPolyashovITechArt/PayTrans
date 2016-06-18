@@ -9,7 +9,6 @@ using PayTransApi.Models;
 namespace PayTransApi.Controllers
 {
 //    [Authorize]
-    [Route("Account")]
     public class ApiAccountController : ApiController
     {
         [HttpGet]
