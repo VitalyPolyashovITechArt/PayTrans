@@ -86,10 +86,11 @@ namespace PayTransApi.Providers
         {
             IDictionary<string, string> data = new Dictionary<string, string>
             {
-                { "firstName", user.FirstName },
-                { "lastName", user.LastName },
-                { "avatarUrl", user.AvatarUrl },
-                { "limit", user.Limit.ToString() }
+                {"id", user.Id},
+                {"firstName", user.FirstName},
+                {"lastName", user.LastName},
+                {"avatarUrl", user.AvatarUrl},
+                {"limit", user.Limit.ToString()}
             };
 
             return new AuthenticationProperties(data);

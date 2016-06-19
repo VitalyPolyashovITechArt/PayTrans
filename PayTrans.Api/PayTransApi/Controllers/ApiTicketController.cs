@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Web;
 using System.Web.Http;
 using Microsoft.AspNet.Identity;
+using Microsoft.Azure.NotificationHubs;
+using Microsoft.Azure.NotificationHubs.Messaging;
+using Newtonsoft.Json;
 using PayTransApi.Models;
+using TransportType = PayTransApi.Models.TransportType;
 
 namespace PayTransApi.Controllers
 {
@@ -11,8 +18,7 @@ namespace PayTransApi.Controllers
     {
         private const int Rate = 5500;
 
-        private readonly AvailableLongTermTicket[] AvailableTickets = new AvailableLongTermTicket[]
-        {
+        private readonly AvailableLongTermTicket[] AvailableTickets = {
             new AvailableLongTermTicket(1, 20, 30, 75),
             new AvailableLongTermTicket(2, 20, 60, 85), 
             new AvailableLongTermTicket(3, 60, 30, 200), 
@@ -28,11 +34,21 @@ namespace PayTransApi.Controllers
         }
 
         [HttpGet]
-        public LongTermTicket LongTerm()
+        public LongTermTicketViewModel LongTerm()
         {
             var id = User.Identity.GetUserId();
             var user = new ApplicationDbContext().Users.FirstOrDefault(x => x.Id == id);
-            return user.LongTermTicket;
+
+            if (user.LongTermTicket == null || user.LongTermTicket.RemainingTrips == 0)
+            {
+                return new LongTermTicketViewModel();
+            }
+
+            return new LongTermTicketViewModel()
+            {
+                RemainingTrips = user.LongTermTicket.RemainingTrips,
+                DaysToExpiration = (int) (user.LongTermTicket.ExpirationDateTime - DateTime.UtcNow).TotalDays
+            };
         }
 
         [HttpGet]
@@ -87,14 +103,14 @@ namespace PayTransApi.Controllers
                     RemainingTrips = chosenTicket.AmountOfTrips
                 };
 
-                if (user.LongTermTicket.RemainingTrips > 0)
+                if (user.LongTermTicket != null && user.LongTermTicket.RemainingTrips > 0)
                 {
                     user.LongTermTicket.RemainingTrips--;
                 }
                 else if (user.ParentUser != null)
                 {
-                    user.Limit -= Rate;
-                    // TODO send notification
+                    user.Limit -= chosenTicket.Cost;
+                    Notifications.Instance.Send($"Your child spent {chosenTicket.Cost} rubles on long term ticket", user.ParentUser.Id);
                 }
                 else
                 {
@@ -114,8 +130,16 @@ namespace PayTransApi.Controllers
         }
 
         [HttpPost]
-        public PayResult Pay(PayRequest request)
+        public PayResult Pay(PayRequest payRequest)
         {
+            var parts = payRequest.Qrcode.Split('|');
+            var request = new PayRequest1()
+            {
+                Type = (TransportType)int.Parse(parts[0]),
+                Route = int.Parse(parts[1]),
+                TransportNumber = parts[2]
+            };
+
             if (request.Type == TransportType.Tram) // emulate payment system failure
             {
                 return new PayResult()
@@ -135,6 +159,7 @@ namespace PayTransApi.Controllers
                 {
                     if (user.Limit - Rate < 0)
                     {
+                        Notifications.Instance.Send("Your child is out of limit", user.ParentUser.Id);
                         return new PayResult()
                         {
                             Succeeded = false,
@@ -151,14 +176,14 @@ namespace PayTransApi.Controllers
                     ValidateDate = DateTime.UtcNow
                 };
 
-                if (user.LongTermTicket.RemainingTrips > 0)
+                if (user.LongTermTicket != null && user.LongTermTicket.RemainingTrips > 0)
                 {
                     user.LongTermTicket.RemainingTrips--;
                 }
                 else if (user.ParentUser != null)
                 {
                     user.Limit -= Rate;
-                    // TODO send notification
+                    Notifications.Instance.Send($"Your child spent {Rate} rubles on single ticket", user.ParentUser.Id);
                 }
                 else
                 {
@@ -173,9 +198,31 @@ namespace PayTransApi.Controllers
             return new PayResult()
             {
                 Succeeded = true,
-                ActiveTicket = activeTicket,
-                Token = Encryptor.Crypt(string.Format("{0}|{1}|{2}|{3}|{4}", activeTicket.Id, activeTicket.Type, activeTicket.Route, activeTicket.TransportNumber, activeTicket.ValidateDate))
+                ActiveTicket = activeTicket
             };
         }
+    }
+
+    public class Notifications
+    {
+        public static Notifications Instance = new Notifications();
+
+        public void Send(string text, string tag)
+        {
+            Hub.SendGcmNativeNotificationAsync(JsonConvert.SerializeObject(new { text }), tag);
+        }
+
+        public NotificationHubClient Hub { get; set; }
+
+        private Notifications()
+        {
+            Hub = NotificationHubClient.CreateClientFromConnectionString("Endpoint=sb://paytransns.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=jOBi9kf4c/wO9Dqa1PlJBaLshbjeoNAtRY9irtCkKfg=",
+                                                                         "PayTransHub");
+        }
+    }
+
+    public class PayRequest
+    {
+        public string Qrcode { get; set; }
     }
 }

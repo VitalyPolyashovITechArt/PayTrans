@@ -33,6 +33,8 @@ namespace PayTransApi.Models
         public virtual LongTermTicket LongTermTicket { get; set; }
 
         public virtual ActiveTicket ActiveTicket { get; set; }
+
+        public virtual AccountSettings AccountSettings { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>

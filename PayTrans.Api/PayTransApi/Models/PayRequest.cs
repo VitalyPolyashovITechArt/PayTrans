@@ -1,6 +1,6 @@
 ﻿namespace PayTransApi.Models
 {
-    public class PayRequest
+    public class PayRequest1
     {
         public TransportType Type { get; set; }
 

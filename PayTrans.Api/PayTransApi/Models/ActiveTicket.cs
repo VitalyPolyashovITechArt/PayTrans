@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 
 namespace PayTransApi.Models
 {
@@ -16,6 +15,14 @@ namespace PayTransApi.Models
         public int Route { get; set; }
 
         public string TransportNumber { get; set; }
+
+        public string Token
+        {
+            get
+            {
+                return Encryptor.Crypt(string.Format("{0}|{1}|{2}|{3}|{4}", Id, Type, Route, TransportNumber, ValidateDate));
+            }
+        }
     }
 
     public enum TransportType

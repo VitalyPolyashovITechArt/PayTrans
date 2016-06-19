@@ -33,5 +33,27 @@ namespace PayTransApi.Controllers
                         Limit = u.Limit
                     }).ToArray();
         }
+
+        [HttpGet]
+        public AccountSettings GetSettings()
+        {
+            var id = User.Identity.GetUserId();
+            var user = new ApplicationDbContext().Users.FirstOrDefault(x => x.Id == id);
+            return user.AccountSettings;
+        }
+
+        [HttpPost]
+        public object ChangeLimit(ChangeLimitRequest request)
+        {
+            var id = User.Identity.GetUserId();
+            using (var context = new ApplicationDbContext())
+            {
+                var linkedAccount =
+                    context.Users.FirstOrDefault(x => x.Id == id).LinkedAccounts.FirstOrDefault(x => x.Id == request.ChildId);
+                linkedAccount.Limit = request.NewLimit;
+                context.SaveChanges();
+            }
+            return new object();
+        }
     }
 }

@@ -6,8 +6,6 @@
 
         public ErrorType ErrorType { get; set; }
 
-        public string Token { get; set; }
-
         public ActiveTicket ActiveTicket { get; set; }
     }
 
